@@ -14,9 +14,25 @@ def home():
     
     return 'this is the home page'
 
+class GitHubIssue:
+    def __init__(self, title, body):
+        self.title = title
+        self.body = body
+    
+    def send_to_github(self):
+        # Placeholder for sending issue to GitHub
+        print(f"Creating GitHub issue: {self.title}\n{self.body}")
+
+
 @app.route("/test")
 def test():
     return 'this is the test page'
 
+
+
+
+def create_github_issue():
+    issue = GitHubIssue("Test Issue", "This is a test issue for monitoring purposes.")
+    pass
 dashboard.bind(app) # Should be added after all endpoints have been defined
 app.run()
