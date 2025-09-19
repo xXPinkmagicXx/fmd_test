@@ -2,16 +2,27 @@ import requests
 from dtos.RequestInfo import RequestInfo 
 
 
-def get_repo_url(repo_owner:str, repo_name:str):
-    return f"https://api.github.com/repos/{repo_owner}/{repo_name}/pulls"    
+def get_base_repo_url(repo_owner:str, repo_name:str):
+    return f"https://api.github.com/repos/{repo_owner}/{repo_name}/"    
 
+def get_issue_url(repo_owner: str, repo_name: str):
+    return get_base_repo_url(repo_owner, repo_name) + "issues"
 
-def make_request(reqest_info: RequestInfo) -> requests.Response:
+def get_endpoint_url(repo_owner: str, repo_name: str, endpoint: str):
+        return f"https://api.github.com/repos/{repo_owner}/{repo_name}/{endpoint}"
+
+def make_post_request(request_info: RequestInfo, data):
+   url = get_endpoint_url(request_info.repo_owner, request_info.repo_name, request_info.endpoint)
+   headers = post_headers(request_info.github_token)
+
+   return requests.post(url, headers=headers, json=data)
+
+def make_get_request(request_info: RequestInfo) -> requests.Response:
     # Get the URL for the repository
-    url = get_repo_url(reqest_info.repo_owner, reqest_info.repo_name)
+    url = get_endpoint_url(request_info.repo_owner, request_info.repo_name, request_info.endpoint)
     
     # Get headers and params
-    headers = get_headers(reqest_info.github_token) # Get headers with token
+    headers = get_headers(request_info.github_token) # Get headers with token
     params = get_params() # Get defailt params
     
     # Make the request and return the response as a request.Response object
@@ -31,6 +42,12 @@ def get_headers(github_token: str):
     }
     return headers
 
+def post_headers(github_token:str):
+    headers = {
+        "Authorization": f"Bearer {github_token}",
+        "Accept": "application/vnd.github.v3.raw+json"
+    }
+    return headers
 
 def main():
     print("This is a utility file with helper functions not to be run directly.")
